@@ -16,4 +16,6 @@ RUN chmod u+x /usr/local/bin/fotomobil/fotomobil.pl
 VOLUME /indir
 VOLUME /outdir
 
+WORKDIR /indir
+
 ENTRYPOINT /usr/local/bin/fotomobil/fotomobil.sh
