@@ -7,5 +7,5 @@ for ii in `find . -type d `
 do
         cd $ii
         pwd
-        /usr/local/bin/fotomobil/fotomobil.pl
+        /usr/local/bin/fotomobil/fotomobil.pl --verbose
 done
