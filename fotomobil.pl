@@ -22,7 +22,7 @@ my      $ACTIONLIST_FULL="/usr/local/bin/fotomobil/fotomobil.phatch";   # On Doc
 my      $ACTIONLIST_ROTATE90="/usr/local/bin/fotomobil/rotate90.phatch";          # Within the container
 my      $ACTIONLIST_ROTATE270="/usr/local/bin/fotomobil/rotate270.phatch";       # Within the container
 my      $verbose=1;
-my      $verbose_schalter="";
+my      $verbose_schalter="1";
 my      $help = 0;
 my      $do_upload = 0;
 my      $do_phatch = 1;
@@ -39,6 +39,7 @@ opendir(DIR, $dirname) or die "Can't open Directory $dirname: $!";
 @files = grep { /\.JPG$|\.jpg$|\.png|\.jpeg/ } readdir(DIR);
 foreach $file ( @files)
 {
+        print "\nfile: $file\n" unless !$verbose_schalter;
         my ($basevoll, $dirvoll, $extvoll) = fileparse($file, $muster_voll);
         # Schon geaenderte Dateien ausklammern
         if (!($extvoll =~$muster_voll))
