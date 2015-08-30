@@ -101,7 +101,7 @@ foreach $file ( @files)
                                 print "\n";
                         }
                         ($verbose_schalter eq '-v') && print "\nACTION LIST: $ACTIONLIST_FULL\n";
-                        system("phatch $verbose_schalter -c -k $ACTIONLIST_FULL $file");
+                        system("phatch $verbose_schalter -c -k $ACTIONLIST_FULL '$file'");
 
                         # If I have to rotate: Use the copies
                         my $kopie = $basevoll."_".$smartphone_width.$extvoll;
