@@ -5,7 +5,7 @@
 
 MYDIR=`/bin/pwd`
 
-for ii in `find . -type d ! -name @\* `
+for ii in `find . -type d ! -path "*@*" `
 do
         cd $ii
         pwd
