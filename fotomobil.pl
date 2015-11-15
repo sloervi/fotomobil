@@ -36,7 +36,7 @@ close(PHATCH);
 
 my      $zaehler = 0;
 opendir(DIR, $dirname) or die "Can't open Directory $dirname: $!";
-@files = grep { /\.JPG$|\.jpg$|\.png|\.jpeg/ } readdir(DIR);
+@files = grep { /\.JPG$|\.jpg$|\.png$|\.jpeg$/ } readdir(DIR);
 foreach $file ( @files)
 {
         print "\nfile: $file\n" unless !$verbose_schalter;
