@@ -9,6 +9,6 @@ for ii in `find . -type d ! -path "*@*" `
 do
         cd $ii
         pwd
-        /usr/local/bin/fotomobil/fotomobil.pl --verbose
+        /usr/local/bin/fotomobil/fotomobil.pl 
 cd $MYDIR
 done
