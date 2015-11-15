@@ -4,6 +4,9 @@ MAINTAINER sloervi McMurphy <docker@sloervi.de>
 
 LABEL Description="Create Docker Image for copying your Photos in a size suitable for your mobile device" Vendor="sloervi McMurphy" Version="1"
 
+# Get some Python Packets
+RUN apt-get install python python-wxgtk python-imaging findutils pyexiv2
+
 # Get my scripts
 RUN cd /usr/local/bin && git clone https://github.com/sloervi/fotomobil.git fotomobil
 
