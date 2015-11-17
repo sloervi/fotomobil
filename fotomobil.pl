@@ -10,7 +10,10 @@ use File::Basename;
 use Getopt::Long;
 use Image::ExifTool;
 use utf8;
-use File::Basename;
+use Digest::SHA qw(sha1 sha1_hex sha1_base64 sha384_hex);
+use Redis;
+use JSON;
+use File::stat;
 
 my      $dirname = ".";
 my      $file;
@@ -27,12 +30,23 @@ my      $help = 0;
 my      $do_upload = 0;
 my      $do_phatch = 1;
 my      $do_nexus;
-                                # Kann ich das auch hinterher ausblenden?
+my      $redisport=6379;        # Default Redis Port
+my      $redisserver = "fotomobil_redis_1";   # Start with docker compose
+my      $redis;                 # Objekt zum Zugriff auf Redis
+
 
 # Check if your Actionlist is present
 open(PHATCH, $ACTIONLIST_FULL) or die "Can't open $ACTIONLIST_FULL!";
 close(PHATCH);
 
+if($redisserver)
+{
+        # Verbindung zum redis Server herstellen
+        $redis = Redis->new(
+          server => $redisserver . ":" . $redisport,
+          name => 'sloervi_fotomobil_connection',
+        );
+}
 
 my      $zaehler = 0;
 opendir(DIR, $dirname) or die "Can't open Directory $dirname: $!";
@@ -44,7 +58,35 @@ foreach $file ( @files)
         # Schon geaenderte Dateien ausklammern
         if (!($extvoll =~$muster_voll))
         {
-                print "\n\nNew file: $file\n" unless !$verbose_schalter;
+                my $digest = "(Hash not defined)";
+                my $filename;
+
+                if($redisserver)
+                {
+                        $digest = sha384_hex($file);
+                        $filename = $redis->get($digest);
+                }
+                if(!$filename)
+                { # File not yet hashed
+                        my $st = stat($file) or die "No $file: $!";
+
+                        print "New File: $file $digest ".$st->size."\n" unless !$verbose_schalter;
+                        if($redisserver)
+                        {
+                                my %jsonhash = (filename => $file, size => $st->size, path => $dirname);
+                                my $json = JSON::encode_json(\%jsonhash);
+                                $redis->set($digest, $json);
+                        }
+                        $do_phatch = 1;
+                }
+                else
+                {
+                        print "In Hash $digest: $filename\n" unless !$verbose_schalter;
+                        $do_phatch = 0;
+                        # Zum testen einmal loeschen
+                        # $redis->del($digest);
+                }
+
                 if($do_phatch)
                 {
                         my $exifTool = new Image::ExifTool;
